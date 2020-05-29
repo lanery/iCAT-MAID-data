@@ -1,9 +1,19 @@
-from pathlib import Path
 import pandas as pd
 
 
 def compile_DataFrame(project_dir, stacks=None):
     """
+    Parameters
+    ----------
+    project_dir : `Path`
+        Filepath to project directory
+    stacks : list
+        List of stacks to export
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame of 
     """
     # Accept all stacks if none provided
     if stacks is None:
@@ -30,3 +40,15 @@ def compile_DataFrame(project_dir, stacks=None):
                         aggfunc='first')\
            .reset_index()
     return df
+
+
+# def parse_yaml(filepath):
+#     """Parse CATMAID project.yaml file to compile stack data
+
+#     Parameters
+#     ----------
+
+#     Returns
+#     -------
+#     """
+#     pass
