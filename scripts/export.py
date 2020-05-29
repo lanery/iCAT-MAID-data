@@ -1,9 +1,10 @@
 from pathlib import Path
 from shutil import copy2
+from itertools import product
 
+from tqdm import tqdm
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 
 
 def create_DataFrame(project_dir, stacks=None):
@@ -67,19 +68,18 @@ def export(export_dir, source, mapping):
     """
     # Create directories
     # .../projects/{project}/{stack}/{z}/
-    for stack, z in zip(mapping.values(),
-                        source['z'].unique()):
-        tgt_dir = export_dir / stack / z
+    for tgt_stack, z in product(mapping.values(),
+                                source['z'].unique()):
+        tgt_dir = export_dir / tgt_stack / str(z)
         tgt_dir.mkdir(parents=True, exist_ok=True)
 
     # Loop through correlative tiles
-    for i, row in tqdm(source.iterrows()),
+    for i, row in tqdm(source.iterrows(),
                        total=len(source)):
         # Loop through each stack
-        for stack in stack_map.keys():
-            tgt = export_dir / stack / str(z)
-            tgt/= row[stack].name
-            copy2(row[stack].as_posix(),
+        for src_stack, tgt_stack in mapping.items():
+            tgt = export_dir / tgt_stack / str(z)
+            copy2(row[src_stack].as_posix(),
                   tgt.as_posix())
 
 
@@ -92,19 +92,19 @@ if __name__ == '__main__':
     # Project location
     # ----------------
     project_dir = Path('//sonic/long_term_storage/rlane/CATMAID/projects/')
-    project_dir /= project
+    project_dir/= project
 
     # Export directory
     # ----------------
     export_dir = Path('M://tnw/ist/do/projects/iCAT/development/iCAT-MAID-data/projects')
-    export_dir /= project
+    export_dir/= project
 
     # Stacks to export
     # ----------------
     stack_map = {
         'lil_EM_montaged': 'EM',
-        'hoechst_correlated': 'hoechst',
-        'insulin_correlated': 'insulin'
+        'hoechst_correlated_postprocessed': 'hoechst',
+        'insulin_correlated_postprocessed': 'insulin'
     }
 
     # Compile project DataFrame
@@ -125,5 +125,6 @@ if __name__ == '__main__':
     # Copy files to export directory
     # ------------------------------
     # .../iCAT-MAID-data/projects/{project}/{stack}/{z}/{row}_{col}_{zoom}.png
-    export(df=source,
+    export(export_dir=export_dir,
+           source=source,
            mapping=stack_map)
