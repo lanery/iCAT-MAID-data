@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def compile_DataFrame(project_dir, stacks=None):
+def create_DataFrame(project_dir, stacks=None):
     """
     Parameters
     ----------
