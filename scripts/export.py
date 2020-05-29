@@ -34,8 +34,8 @@ def create_DataFrame(project_dir, stacks=None):
     rows = []
     # Iterate through image tiles
     for stack_dir in project_dir.glob('*'):
-        if stack_dir.name in stacks:
-            for fp in stack_dir.glob('*/*_*_*.png'):
+        if (stack_dir.name in stacks) and (stack_dir.is_dir()):
+            for fp in stack_dir.glob('[0-9]/*_*_*.png'):
                 stack = fp.parents[1].name
                 z = int(fp.parents[0].name)
                 y, x, zoom = [int(i) for i in fp.stem.split('_')]
@@ -79,15 +79,16 @@ def export(export_dir, source, mapping):
         # Loop through each stack
         for src_stack, tgt_stack in mapping.items():
             tgt = export_dir / tgt_stack / str(z)
-            copy2(row[src_stack].as_posix(),
-                  tgt.as_posix())
+            if not pd.isna(row[src_stack]):
+                copy2(row[src_stack].as_posix(),
+                    tgt.as_posix())
 
 
 if __name__ == '__main__':
 
     # Project name
     # ------------
-    project = '20200507_RL012'
+    project = '20200429_RL011'
 
     # Project location
     # ----------------
@@ -103,8 +104,7 @@ if __name__ == '__main__':
     # ----------------
     stack_map = {
         'lil_EM_montaged': 'EM',
-        'hoechst_correlated_postprocessed': 'hoechst',
-        'insulin_correlated_postprocessed': 'insulin'
+        'hoechst_correlated': 'hoechst',
     }
 
     # Compile project DataFrame
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     # Filter to min/max zoom levels
     # -----------------------------
     source = df.loc[(df['zoom'] >= zoom_min) &\
-                    (df['zoom'] <= zoom_max)].dropna(axis=0)
+                    (df['zoom'] <= zoom_max)]
 
     # Copy files to export directory
     # ------------------------------
