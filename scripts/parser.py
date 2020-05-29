@@ -13,7 +13,12 @@ def compile_DataFrame(project_dir, stacks=None):
     Returns
     -------
     df : pd.DataFrame
-        DataFrame of 
+        DataFrame of filepaths to tile data
+            z | y | x | zoom |   stack1     |   stack2
+            ----------------------------------------------
+            0 | 0 | 0 |  0   | path/to/file | path/to/file
+            0 | 0 | 0 |  0   | path/to/file | path/to/file
+            0 | 0 | 0 |  0   | path/to/file | path/to/file
     """
     # Accept all stacks if none provided
     if stacks is None:
