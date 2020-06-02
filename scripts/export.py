@@ -78,17 +78,17 @@ def export(export_dir, source, mapping):
                        total=len(source)):
         # Loop through each stack
         for src_stack, tgt_stack in mapping.items():
-            tgt = export_dir / tgt_stack / str(z)
+            tgt = export_dir / tgt_stack / str(row['z'])
             if not pd.isna(row[src_stack]):
                 copy2(row[src_stack].as_posix(),
-                    tgt.as_posix())
+                      tgt.as_posix())
 
 
 if __name__ == '__main__':
 
     # Project name
     # ------------
-    project = '20200429_RL011'
+    project = '20200507_RL012'
 
     # Project location
     # ----------------
@@ -105,6 +105,7 @@ if __name__ == '__main__':
     stack_map = {
         'lil_EM_montaged': 'EM',
         'hoechst_correlated': 'hoechst',
+        'insulin_correlated': 'insulin',
     }
 
     # Compile project DataFrame
